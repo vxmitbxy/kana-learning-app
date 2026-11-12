@@ -1,0 +1,829 @@
+/* ===== Темы и палитры =====
+   Тема (light/dark) задаётся атрибутом data-theme на <html>,
+   палитра — атрибутом data-palette. Шрифт — переменной --kana-font (ставит app.js). */
+
+:root {
+    /* Палитра по умолчанию (фиолетовая) */
+    --c1: #667eea;
+    --c2: #764ba2;
+    --grad: linear-gradient(135deg, var(--c1) 0%, var(--c2) 100%);
+    --glow: color-mix(in srgb, var(--c1) 30%, transparent);
+
+    /* Светлая тема (по умолчанию) */
+    --surface: #ffffff;
+    --surface-2: #f8f9fa;
+    --surface-3: #e9ecef;
+    --text: #333333;
+    --text-strong: #495057;
+    --muted: #6c757d;
+    --border: #e9ecef;
+    --hover: #e9ecef;
+    --shadow: rgba(0, 0, 0, 0.3);
+    --btn-secondary: #6c757d;
+    --btn-secondary-hover: #5a6268;
+    --ok-bg: #d4edda;
+    --ok-fg: #155724;
+    --ok-border: #c3e6cb;
+    --err-bg: #f8d7da;
+    --err-fg: #721c24;
+    --err-border: #f5c6cb;
+
+    --kana-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Палитры */
+[data-palette="ocean"] {
+    --c1: #0ea5e9;
+    --c2: #0d9488;
+}
+
+[data-palette="sunset"] {
+    --c1: #f97316;
+    --c2: #ec4899;
+}
+
+[data-palette="forest"] {
+    --c1: #22c55e;
+    --c2: #0f766e;
+}
+
+/* Тёмная тема */
+[data-theme="dark"] {
+    color-scheme: dark;
+    --surface: #1e1e2e;
+    --surface-2: #26263a;
+    --surface-3: #33334d;
+    --text: #e4e4ef;
+    --text-strong: #d0d0e0;
+    --muted: #9a9ab0;
+    --border: #3a3a52;
+    --hover: #3a3a52;
+    --shadow: rgba(0, 0, 0, 0.6);
+    --btn-secondary: #4b5160;
+    --btn-secondary-hover: #5a6170;
+    --ok-bg: #1d3a2a;
+    --ok-fg: #9be0b4;
+    --ok-border: #2d5a40;
+    --err-bg: #3c1f25;
+    --err-fg: #f5a6ae;
+    --err-border: #5a2d36;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--grad);
+    min-height: 100vh;
+    padding: 20px;
+    color: var(--text);
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--surface);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px var(--shadow);
+    overflow: hidden;
+}
+
+/* Header */
+header {
+    background: var(--grad);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5em;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    font-size: 1em;
+    opacity: 0.95;
+}
+
+.stats span {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 16px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    background: var(--surface-2);
+    border-bottom: 2px solid var(--border);
+}
+
+.tab {
+    flex: 1;
+    padding: 18px;
+    background: none;
+    border: none;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.tab:hover {
+    background: var(--hover);
+    color: var(--text-strong);
+}
+
+.tab.active {
+    color: var(--c1);
+    background: var(--surface);
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--grad);
+}
+
+/* Views */
+.view {
+    display: none;
+    padding: 40px;
+    min-height: 400px;
+}
+
+.view.active {
+    display: block;
+}
+
+/* Practice View */
+.card-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.kana-card {
+    background: var(--grad);
+    border-radius: 20px;
+    padding: 60px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px var(--glow);
+}
+
+.kana-display {
+    font-family: var(--kana-font);
+    font-size: 8em;
+    text-align: center;
+    color: white;
+    font-weight: 300;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.word-meaning {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.2em;
+    font-weight: 400;
+    margin-bottom: 15px;
+}
+
+.word-meaning.hidden,
+.word-note.hidden {
+    display: none;
+}
+
+.word-note {
+    text-align: right;
+    color: var(--muted);
+    font-size: 0.9em;
+    font-style: italic;
+    margin-bottom: 8px;
+}
+
+.input-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#answer-input {
+    flex: 1;
+    padding: 15px 20px;
+    font-size: 1.2em;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text);
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+#answer-input:focus {
+    outline: none;
+    border-color: var(--c1);
+    box-shadow: 0 0 0 3px var(--glow);
+}
+
+#answer-input:disabled {
+    background: var(--surface-2);
+    cursor: not-allowed;
+}
+
+/* Buttons */
+.btn {
+    padding: 15px 30px;
+    font-size: 1.1em;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: var(--grad);
+    color: white;
+    box-shadow: 0 4px 15px var(--glow);
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--glow);
+}
+
+.btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: var(--btn-secondary);
+    color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: var(--btn-secondary-hover);
+    transform: translateY(-2px);
+}
+
+.full-width {
+    width: 100%;
+}
+
+/* Feedback */
+.feedback {
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: 600;
+    animation: fadeIn 0.3s ease;
+}
+
+.feedback.hidden {
+    display: none;
+}
+
+.feedback.success {
+    background: var(--ok-bg);
+    color: var(--ok-fg);
+    border: 2px solid var(--ok-border);
+}
+
+.feedback.error {
+    background: var(--err-bg);
+    color: var(--err-fg);
+    border: 2px solid var(--err-border);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Table View */
+.table-selector {
+    text-align: center;
+    margin-bottom: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.kana-table {
+    overflow: visible; /* без скроллбара */
+}
+
+.kana-extra {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.kana-extra table {
+    width: auto;
+    margin: 0 auto;
+}
+
+.kana-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+
+.kana-table th,
+.kana-table td {
+    padding: 15px;
+    text-align: center;
+    border: 1px solid var(--border);
+    font-family: var(--kana-font);
+    font-size: 1.5em;
+}
+
+.kana-table th {
+    background: var(--grad);
+    color: white;
+    font-weight: 600;
+}
+
+.kana-table td {
+    background: var(--surface);
+    color: var(--text);
+    transition: all 0.2s ease;
+}
+
+/* Таблица ёон: ширина по содержимому, первый столбец — ровно под кнопку */
+.kana-table table.yoon-table {
+    width: auto;
+    margin: 0 auto;
+}
+
+.kana-table table.yoon-table th:first-child {
+    width: 1%;
+    white-space: nowrap;
+    padding: 10px;
+}
+
+.kana-table .yoon-toggle {
+    width: auto; /* перебивает width:100% из .btn на мобильных */
+    padding: 6px 10px;
+    font-size: 0.85em;
+    white-space: nowrap;
+}
+
+.kana-table td:hover {
+    background: var(--surface-2);
+    box-shadow: inset 0 0 0 2px var(--c1); /* вместо scale: не выходит за таблицу и не даёт скроллбар */
+    cursor: pointer;
+}
+
+/* Settings View */
+.settings-panel {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+#reset-stats {
+    margin-bottom: 25px;   /* отступ до блока «Алфавит» */
+}
+
+.settings-panel h2 {
+    color: var(--text-strong);
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 2em;
+}
+
+.setting-group {
+    background: var(--surface-2);
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+}
+
+.setting-group h3 {
+    color: var(--text-strong);
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+.setting-sub {
+    color: var(--text-strong);
+    margin: 18px 0 10px;
+    font-size: 1.05em;
+    font-weight: 600;
+}
+
+.radio-label {
+    display: block;
+    padding: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+    font-size: 1.1em;
+}
+
+.radio-label:hover {
+    background: var(--surface-3);
+}
+
+.radio-label input {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Палитры: карточки с превью */
+.palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+    align-items: stretch;
+}
+
+.palette-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--text);
+    transition: border-color 0.2s ease;
+}
+
+.palette-option:hover {
+    border-color: var(--c1);
+}
+
+.palette-option:has(input:checked) {
+    border-color: var(--c1);
+    box-shadow: 0 0 0 3px var(--glow);
+}
+
+.palette-option input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.palette-option input[type="color"] {
+    width: 34px;
+    height: 26px;
+    margin-left: auto;
+    padding: 0;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    background: none;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--sw1), var(--sw2));
+    flex-shrink: 0;
+}
+
+/* Выбор шрифта */
+#font-select {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.05em;
+    font-family: inherit;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.font-preview {
+    font-family: var(--kana-font);
+    font-size: 2em;
+    text-align: center;
+    margin-top: 12px;
+    padding: 15px;
+    background: var(--surface);
+    border-radius: 10px;
+    color: var(--text);
+}
+
+/* Группы: вкладки алфавита и карточки-столбики */
+.group-script-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.script-tab {
+    opacity: 0.55;
+}
+
+.script-tab.active {
+    opacity: 1;
+    box-shadow: 0 0 0 3px var(--glow);
+}
+
+/* Все карточки вкладки — в одну строку */
+.groups-grid {
+    display: grid;
+    grid-template-columns: repeat(16, minmax(0, 1fr));
+    gap: 6px;
+    margin-bottom: 15px;
+    align-items: stretch;
+    overflow-x: auto;      /* горизонтальный скролл на узких экранах */
+    padding: 4px;          /* место для hover-сдвига и тени карточек */
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Ёон: 11 карточек в одну строку, высота каждой — по её содержимому */
+.groups-grid.yoon-grid {
+    grid-template-columns: repeat(11, minmax(0, 1fr));
+    align-items: start;
+}
+
+.groups-grid.yoon-grid .group-slot {
+    height: auto;
+}
+
+/* Одна строка на каждую гласную (a, i, u, e, o): у карточек одинаковая высота */
+.group-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 3.4em;
+}
+
+.group-slot.slot-tall {
+    height: 4.6em;
+}
+
+.slot-tall .group-kana {
+    font-size: 1.2em;
+}
+
+.group-kana-alt {
+    font-size: 1.1em;
+    opacity: 0.8;
+}
+
+.group-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 2px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--text);
+    user-select: none;
+}
+
+.group-card:hover {
+    border-color: var(--c1);
+    transform: translateY(-2px);
+}
+
+.group-card.selected {
+    background: var(--grad);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 4px 15px var(--glow);
+}
+
+.group-kana {
+    font-family: var(--kana-font);
+    font-size: 1.3em;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--text);
+}
+
+.group-romaji {
+    font-size: 0.7em;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+.group-card.selected .group-kana {
+    color: white;
+}
+
+.group-card.selected .group-romaji {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.group-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.group-controls .btn {
+    flex: 1;
+    min-width: 150px;
+    padding: 10px;
+    font-size: 0.95em;
+}
+
+#reset-stats {
+    margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    header {
+        padding: 30px 30px 16px; /* низ уменьшен, остальные стороны как на ПК */
+    }
+
+    header h1 {
+        font-size: 1.8em;
+    }
+
+    /* Все три счётчика в одну строку и одного размера */
+    .stats {
+        flex-wrap: nowrap;
+        gap: 6px;
+    }
+
+    .stats span {
+        padding: 6px 8px;
+        font-size: 0.75em;
+        white-space: nowrap;
+    }
+
+    /* Подсказка в поле ввода меньше, чтобы текст помещался */
+    #answer-input {
+        font-size: 1em;
+    }
+
+    /* Длинные слова: одна строка, мельче шрифт */
+    .kana-display.long-word {
+        font-size: 2.6em;
+        white-space: nowrap;
+    }
+
+    #answer-input::placeholder {
+        font-size: 0.85em;     /* подсказка заполняет поле по ширине */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .kana-display {
+        font-size: 5em;
+    }
+
+    .input-area {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .kana-card {
+        padding: 40px 20px;
+    }
+
+    .view {
+        padding: 20px;
+    }
+
+    .kana-table th,
+    .kana-table td {
+        padding: 10px;
+        font-size: 1.2em;
+    }
+
+    .tab {
+        font-size: 0.9em;
+        padding: 15px 10px;
+    }
+
+    /* Кнопки вкладок — всегда в одну строку, делят ширину поровну */
+    .table-selector,
+    .group-script-tabs {
+        flex-wrap: nowrap;
+        gap: 6px;
+    }
+
+    .table-selector .btn,
+    .group-script-tabs .btn {
+        width: auto;
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 10px 4px;
+        font-size: 0.9em;
+        white-space: nowrap;
+    }
+
+    /* Фиксированная ширина карточек: на узком экране строка прокручивается вбок */
+    .groups-grid {
+        grid-template-columns: repeat(16, 46px);
+        width: 100%;
+        padding-bottom: 12px;  /* место под полосу прокрутки */
+        scrollbar-width: auto;
+        scrollbar-color: var(--c1) var(--surface-3);
+    }
+
+    /* Явная полоса прокрутки (WebKit / Chromium WebView) */
+    .groups-grid::-webkit-scrollbar {
+        height: 10px;
+    }
+
+    .groups-grid::-webkit-scrollbar-track {
+        background: var(--surface-3);
+        border-radius: 5px;
+    }
+
+    .groups-grid::-webkit-scrollbar-thumb {
+        background: var(--c1);
+        border-radius: 5px;
+    }
+
+    .groups-grid.yoon-grid {
+        grid-template-columns: repeat(11, 56px);
+    }
+
+    .group-card {
+        padding: 10px 5px;
+    }
+
+    .group-kana {
+        font-size: 1.4em;
+    }
+
+    .group-romaji {
+        font-size: 0.65em;
+    }
+
+    .group-controls .btn {
+        flex: 1 1 100%;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.5em;
+    }
+
+    .kana-display {
+        font-size: 4em;
+    }
+
+    .stats span {
+        font-size: 0.75em;
+    }
+
+}

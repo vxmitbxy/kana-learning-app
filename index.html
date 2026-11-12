@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Изучение японской каны</title>
+    <link rel="icon" href="flag.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="fonts/noto-sans-jp.css">
+    <link rel="stylesheet" href="fonts/noto-serif-jp.css">
+    <link rel="stylesheet" href="fonts/zen-kaku-gothic.css">
+    <link rel="stylesheet" href="fonts/zen-maru-gothic.css">
+    <link rel="stylesheet" href="fonts/kosugi-maru.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 style="display: flex; justify-content: center; align-items: center; gap: 15px;">
+                <img src="flag.svg" height="64" alt="Флаг Японии">
+                <span>Изучение японской каны</span>
+            </h1>
+            <div class="stats">
+                <span id="correct-count">Правильно: 0</span>
+                <span id="total-count">Всего: 0</span>
+                <span id="accuracy">Точность: 0%</span>
+            </div>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab active" data-view="practice">Практика</button>
+            <button class="tab" data-view="table">Таблица</button>
+            <button class="tab" data-view="settings">Настройки</button>
+        </nav>
+
+        <!-- Practice View -->
+        <div id="practice-view" class="view active">
+            <div class="card-container">
+                <div class="word-note hidden" id="word-note">*значение зависит от контекста</div>
+                <div class="kana-card">
+                    <div class="word-meaning hidden" id="word-meaning"></div>
+                    <div class="kana-display" id="kana-display">あ</div>
+                </div>
+
+                <div class="input-area">
+                    <input
+                        type="text"
+                        id="answer-input"
+                        placeholder="Введите ответ"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+                    <button id="submit-btn" class="btn btn-primary">Проверить</button>
+                </div>
+
+                <div id="feedback" class="feedback hidden"></div>
+            </div>
+        </div>
+
+        <!-- Table View -->
+        <div id="table-view" class="view">
+            <div class="table-selector">
+                <button class="btn btn-primary active" data-script="hiragana">Хирагана</button>
+                <button class="btn btn-primary" data-script="yoon">Ёон</button>
+                <button class="btn btn-primary" data-script="katakana">Катакана</button>
+            </div>
+            <div id="kana-table" class="kana-table"></div>
+        </div>
+
+        <!-- Settings View -->
+        <div id="settings-view" class="view">
+            <div class="settings-panel">
+                <h2>Настройки практики</h2>
+
+                <button id="reset-stats" class="btn btn-secondary full-width">Сбросить статистику</button>
+
+                <div class="setting-group">
+                    <h3>Алфавит</h3>
+                    <label class="radio-label">
+                        <input type="radio" name="script-mode" value="both" checked>
+                        Хирагана + Катакана
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="script-mode" value="hiragana">
+                        Только Хирагана
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="script-mode" value="katakana">
+                        Только Катакана
+                    </label>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Режим практики</h3>
+                    <label class="radio-label">
+                        <input type="radio" name="practice-mode" value="kana" checked>
+                        Кана → Ромадзи
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="practice-mode" value="romaji">
+                        Ромадзи → Кана
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="practice-mode" value="words">
+                        Слова (кана → ромадзи)
+                    </label>
+
+                    <h4 class="setting-sub">Длина слов (для режима «Слова»)</h4>
+                    <label class="radio-label">
+                        <input type="radio" name="word-length" value="2" checked>
+                        2 символа
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="word-length" value="3">
+                        3 символа
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="word-length" value="4">
+                        4 символа
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="word-length" value="5">
+                        5 символов
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="word-length" value="6">
+                        6 символов и более
+                    </label>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Группы символов</h3>
+                    <div class="group-script-tabs">
+                        <button class="btn btn-primary script-tab active" data-group-script="hiragana">Хирагана</button>
+                        <button class="btn btn-primary script-tab" data-group-script="yoon">Ёон</button>
+                        <button class="btn btn-primary script-tab" data-group-script="katakana">Катакана</button>
+                    </div>
+                    <div class="groups-grid" id="groups-grid"></div>
+                    <div class="group-controls">
+                        <button id="select-all-groups" class="btn btn-secondary">Выбрать все</button>
+                        <button id="deselect-all-groups" class="btn btn-secondary">Снять все</button>
+                        <button id="select-basic-groups" class="btn btn-secondary">Только основные (1-11)</button>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Оформление</h3>
+                    <h4 class="setting-sub">Тема</h4>
+                    <label class="radio-label">
+                        <input type="radio" name="theme" value="system" checked>
+                        Системная
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="theme" value="light">
+                        Светлая
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="theme" value="dark">
+                        Тёмная
+                    </label>
+
+                    <h4 class="setting-sub">Цветовая палитра</h4>
+                    <div class="palette-grid">
+                        <label class="palette-option">
+                            <input type="radio" name="palette" value="violet" checked>
+                            <span class="swatch" style="--sw1:#667eea;--sw2:#764ba2"></span>
+                            Фиолетовая
+                        </label>
+                        <label class="palette-option">
+                            <input type="radio" name="palette" value="ocean">
+                            <span class="swatch" style="--sw1:#0ea5e9;--sw2:#0d9488"></span>
+                            Океан
+                        </label>
+                        <label class="palette-option">
+                            <input type="radio" name="palette" value="sunset">
+                            <span class="swatch" style="--sw1:#f97316;--sw2:#ec4899"></span>
+                            Закат
+                        </label>
+                        <label class="palette-option">
+                            <input type="radio" name="palette" value="forest">
+                            <span class="swatch" style="--sw1:#22c55e;--sw2:#0f766e"></span>
+                            Лес
+                        </label>
+                        <label class="palette-option">
+                            <input type="radio" name="palette" value="custom">
+                            <span class="swatch" id="custom-swatch"></span>
+                            Свой цвет
+                            <input type="color" id="custom-color" value="#667eea" title="Выбрать цвет">
+                        </label>
+                    </div>
+
+                    <h4 class="setting-sub">Шрифт для символов</h4>
+                    <select id="font-select">
+                        <option value="noto-sans-jp">Noto Sans JP (гротеск)</option>
+                        <option value="noto-serif-jp">Noto Serif JP (антиква)</option>
+                        <option value="zen-kaku-gothic">Zen Kaku Gothic New (гротеск)</option>
+                        <option value="zen-maru-gothic">Zen Maru Gothic (округлый)</option>
+                        <option value="kosugi-maru">Kosugi Maru (округлый, рукописный)</option>
+                    </select>
+                    <div class="font-preview" id="font-preview">あいうえお カキクケコ 日本語</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="kana-data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
