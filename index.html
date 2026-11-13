@@ -64,6 +64,11 @@
                 <button class="btn btn-primary" data-script="katakana">Катакана</button>
             </div>
             <div id="kana-table" class="kana-table"></div>
+            <h3 class="group-gender-table-voice">Голос</h3>
+            <div class="group-gender-table-voice">
+                <button id="table-voice-female" class="btn btn-primary script-tab active">Женский</button>
+                <button id="table-voice-male" class="btn btn-secondary script-tab">Мужской</button>
+            </div>
         </div>
 
         <!-- Settings View -->
@@ -139,6 +144,19 @@
                         <button id="select-all-groups" class="btn btn-secondary">Выбрать все</button>
                         <button id="deselect-all-groups" class="btn btn-secondary">Снять все</button>
                         <button id="select-basic-groups" class="btn btn-secondary">Только основные (1-11)</button>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>Аудио</h3>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="practice-audio-checkbox" name="audio">
+                        Включить аудио в режиме практика
+                    </label>
+                    <h4>Гендер голоса</h4>
+                    <div class="group-gender-practice-voice">
+                        <button id="practive-voice-female" class="btn btn-primary script-tab active">Женский</button>
+                        <button id="practive-voice-male" class="btn btn-secondary script-tab">Мужской</button>
                     </div>
                 </div>
 

@@ -17,6 +17,9 @@ class KanaApp {
             scriptMode: 'both',
             practiceMode: 'kana',
             selectedGroups: { hiragana: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], katakana: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], yoon: [] },
+            practiceAudio: false,
+            practiceVoice: 'f',
+            tableVoice: 'f',
             theme: 'system',
             palette: 'violet',
             customColor: '#667eea',
@@ -37,6 +40,7 @@ class KanaApp {
         this.applyAppearance();
         localStorage.removeItem('kanaStats'); // статистика живёт только до перезагрузки страницы
         this.initializeElements();
+        this.updateVoiceButtons();
         this.attachEventListeners();
         this.renderGroupsGrid();
         this.updateStats();
@@ -63,6 +67,11 @@ class KanaApp {
         this.groupsGrid = document.getElementById('groups-grid');
         this.fontSelect = document.getElementById('font-select');
         this.fontPreview = document.getElementById('font-preview');
+        this.practiceAudio = document.getElementById('practice-audio-checkbox');
+        this.practiceVoiceFemaleBtn = document.getElementById('practive-voice-female');
+        this.practiceVoiceMaleBtn = document.getElementById('practive-voice-male');
+        this.tableVoiceFemaleBtn = document.getElementById('table-voice-female');
+        this.tableVoiceMaleBtn = document.getElementById('table-voice-male');
     }
 
     attachEventListeners() {
@@ -140,7 +149,7 @@ class KanaApp {
         // Клик по ячейке таблицы (делегирование: таблица перерисовывается)
         document.getElementById('kana-table').addEventListener('click', (e) => {
             const cell = e.target.closest('td[data-kana]');
-            if (cell) this.playKana(cell.dataset.kana, cell.dataset.script);
+            if (cell) this.playKanaTable(cell.dataset.kana, cell.dataset.script);
         });
 
         document.querySelectorAll('input[name="theme"]').forEach(radio => {
@@ -182,6 +191,24 @@ class KanaApp {
             this.saveSettings();
             this.applyAppearance();
         });
+
+        this.practiceAudio.addEventListener('change', (e) => {
+            this.settings.practiceAudio = e.target.checked;
+            this.saveSettings();
+        });
+
+        if (this.practiceVoiceFemaleBtn) {
+            this.practiceVoiceFemaleBtn.addEventListener('click', () => this.setVoice('practice', 'f'));
+        }
+        if (this.practiceVoiceMaleBtn) {
+            this.practiceVoiceMaleBtn.addEventListener('click', () => this.setVoice('practice', 'm'));
+        }
+        if (this.tableVoiceFemaleBtn) {
+            this.tableVoiceFemaleBtn.addEventListener('click', () => this.setVoice('table', 'f'));
+        }
+        if (this.tableVoiceMaleBtn) {
+            this.tableVoiceMaleBtn.addEventListener('click', () => this.setVoice('table', 'm'));
+        }
 
         // Если выбрана «Как в телефоне», следим за сменой темы системы
         if (window.matchMedia) {
@@ -436,14 +463,15 @@ class KanaApp {
         if (isCorrect) {
             this.stats.correct++;
             this.updateStats();
+            if (this.settings.practiceAudio) this.playKana(this.currentKana.romaji);
             this.nextKana();
         } else {
             let errorMsg = `Правильный ответ: ${this.currentKana.romaji}`;
+            if (this.settings.practiceAudio) this.playKana(this.currentKana.romaji);
             if (this.settings.practiceMode === 'romaji') {
                 errorMsg = `Правильный ответ: ${this.currentKana.kana} (${this.currentKana.romaji})`;
             }
             if (this.settings.practiceMode === 'words' && this.currentKana.meaning) {
-                //errorMsg += ` (${this.currentKana.meaning})`;
                 errorMsg;
             }
 
@@ -567,10 +595,14 @@ class KanaApp {
     }
 
     // Звук из папки audio/: для любой каны (хирагана, катакана, ёон) — h-<ромадзи>.mp3
-    playKana(kana, script) {
+    playKanaTable(kana, script) {
         const romaji = this.kanaMap[script] && this.kanaMap[script][kana];
         if (!romaji) return;
-        new Audio(`audio/h-${romaji}.mp3`).play().catch(() => {});
+        this.playKana(romaji, this.settings.tableVoice);
+    }
+
+    playKana(romaji, voice = this.settings.practiceVoice) {
+        new Audio(`audio/${voice}/h-${romaji}.mp3`).play().catch(() => {});
     }
 
     updateInputPlaceholder() {
@@ -581,6 +613,34 @@ class KanaApp {
         }
     }
 
+    setVoice(target, voice) {
+        if (target === 'practice') {
+            this.settings.practiceVoice = voice;
+        } else {
+            this.settings.tableVoice = voice;
+        }
+        this.saveSettings();
+        this.updateVoiceButtons();
+    }
+
+    updateVoiceButtons() {
+        const applyBtnState = (femaleBtn, maleBtn, currentVoice) => {
+            if (!femaleBtn || !maleBtn) return;
+            const isFemale = currentVoice === 'f';
+
+            femaleBtn.classList.toggle('active', isFemale);
+            femaleBtn.classList.toggle('btn-primary', isFemale);
+            femaleBtn.classList.toggle('btn-secondary', !isFemale);
+
+            maleBtn.classList.toggle('active', !isFemale);
+            maleBtn.classList.toggle('btn-primary', !isFemale);
+            maleBtn.classList.toggle('btn-secondary', isFemale);
+        };
+
+        applyBtnState(this.practiceVoiceFemaleBtn, this.practiceVoiceMaleBtn, this.settings.practiceVoice);
+        applyBtnState(this.tableVoiceFemaleBtn, this.tableVoiceMaleBtn, this.settings.tableVoice);
+    }
+
     loadSettingsToUI() {
         document.querySelector(`input[name="script-mode"][value="${this.settings.scriptMode}"]`).checked = true;
         document.querySelector(`input[name="practice-mode"][value="${this.settings.practiceMode}"]`).checked = true;
@@ -589,6 +649,8 @@ class KanaApp {
         document.querySelector(`input[name="palette"][value="${this.settings.palette}"]`).checked = true;
         document.getElementById('custom-color').value = this.settings.customColor;
         this.fontSelect.value = this.settings.font;
+        this.practiceAudio.checked = this.settings.practiceAudio;
+        this.updateVoiceButtons();
     }
 
     saveSettings() {

@@ -441,8 +441,13 @@ header h1 {
     font-weight: 600;
 }
 
+.checkbox-label,
 .radio-label {
-    display: block;
+    display: flex;
+    align-items: center;
+    line-height: 1.2;
+    gap: 5px;
+    /* display: block; */
     padding: 12px;
     margin-bottom: 10px;
     cursor: pointer;
@@ -451,10 +456,12 @@ header h1 {
     font-size: 1.1em;
 }
 
+.checkbox-label:hover,
 .radio-label:hover {
     background: var(--surface-3);
 }
 
+.checkbox-label input,
 .radio-label input {
     margin-right: 10px;
     width: 18px;
@@ -541,6 +548,28 @@ header h1 {
     background: var(--surface);
     border-radius: 10px;
     color: var(--text);
+}
+
+.group-gender-practice-voice {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: left;
+    margin-top: 15px;
+}
+
+.group-gender-table-voice h3 {
+    color: var(--text-strong);
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+.group-gender-table-voice {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
 }
 
 /* Группы: вкладки алфавита и карточки-столбики */
