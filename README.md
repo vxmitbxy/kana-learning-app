@@ -5,7 +5,7 @@ Web-приложение для изучения хираганы, катака�
 Интерактивное веб-приложение и Android-клиент для изучения и тренировки японских слоговых азбук — **Хираганы**, **Катаканы** и сочетаний **Ёон** — с озвучкой, гибкими настройками сложности и кастомизацией интерфейса.
 
 [![Открыть веб-версию](https://img.shields.io/badge/%D0%9E%D1%82%D0%BA%D1%80%D1%8B%D1%82%D1%8C_%D0%B2%D0%B5%D0%B1--%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D1%8E-GitHub_Pages-667eea?style=for-the-badge&color=blue)](https://vxmitbxy.github.io/kana-learning-app/)
-[![Скачать APK](https://img.shields.io/badge/%D0%A1%D0%BA%D0%B0%D1%87%D0%B0%D1%82%D1%8C_APK-Android_WebView-3DDC84?style=for-the-badge&color=green)](https://github.com/vxmitbxy/kana-learning-app/releases/download/v1.0.0/kana.apk)
+[![Скачать APK](https://img.shields.io/badge/%D0%A1%D0%BA%D0%B0%D1%87%D0%B0%D1%82%D1%8C_APK-Android_WebView-3DDC84?style=for-the-badge&color=green)](https://github.com/vxmitbxy/kana-learning-app/releases/download/v1.0.1/kana-v1.0.1.apk)
 
 ---
 
